@@ -1,0 +1,63 @@
+I have an Hack PC CPU emulator. I want to test it before going on next part of my project.
+Write me a pytest test for every hack instruction that exists: combine dest 
+
+COMP_0 =          
+COMP_1 =          
+COMP_MINUS_1 =    
+COMP_D =          
+COMP_A =          
+COMP_NOT_D =      
+COMP_NOT_A =      
+COMP_MINUS_D =    
+COMP_MINUS_A =    
+COMP_D_PLUS_ONE = 
+COMP_A_PLUS_ONE = 
+COMP_D_MINUS_ONE =
+COMP_A_MINUS_ONE =
+COMP_D_PLUS_A =   
+COMP_D_MINUS_A =  
+COMP_A_MINUS_D =  
+COMP_D_AND_A =    
+COMP_D_OR_A =     
+COMP_M =          
+COMP_NOT_M =      
+COMP_MINUS_M =    
+COMP_M_PLUS_ONE = 
+COMP_M_MINUS_ONE =
+COMP_D_PLUS_M =   
+COMP_D_MINUS_M =  
+COMP_M_MINUS_D =  
+COMP_D_AND_M =    
+COMP_D_OR_M =     
+JUMP_NULL
+JUMP_JGT 
+JUMP_JEQ 
+JUMP_JGE 
+JUMP_JLT 
+JUMP_JNE 
+JUMP_JLE 
+JUMP_JMP 
+
+
+
+
+class HackCPU:
+    def __init__(self):
+        # Registers
+        self.register_a = 0
+        self.register_d = 0
+
+        self.alu_out = 0
+
+        self.pc = 0
+
+    def execute_instruction(self, instruction: list, inM: int, reset: bool) -> list:
+        """
+            Method is executing any HACK instruction on cpu
+
+            :param instruction: list by size of 16 with only 1 and 0 representing an HACK instruction binary.
+            :param inM: in memory value.
+            :param reset: reset status.
+
+            :return: outM: int(Out Memory value), writeM: bool(Write into a memory status), addressM: int (Address to writeM), PC: int(Program counter)
+        """
