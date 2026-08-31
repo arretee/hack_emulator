@@ -1,4 +1,4 @@
-from src.config import MAX_POSITIVE_VALUE
+from src.hack_config import MAX_POSITIVE_VALUE
 
 def convert_bin_to_dec(binary_list: list) -> int:
     """

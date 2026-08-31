@@ -1,5 +1,5 @@
 from src.hack_cpu import HackCPU
-from src.config import * 
+from src.hack_config import * 
 
 
 class HackComputer:

@@ -1,4 +1,4 @@
-from src.config import *
+from src.hack_config import *
 from src.binary_functions import * 
 
 
