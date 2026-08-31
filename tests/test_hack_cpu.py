@@ -93,6 +93,8 @@ test_data = [
     (10, 5,  0, False, make_c_instr("D-1"),   0, 4,    False, 10, 1, 10, 5,  "COMP: D-1"),
     (15, 10, 0, False, make_c_instr("A-1"),   0, 14,   False, 15, 1, 15, 10, "COMP: A-1"),
     (20, 10, 0, False, make_c_instr("D+A"),   0, 30,   False, 20, 1, 20, 10, "COMP: D+A"),
+
+    # areg, dreg, start_pc, reset, instruction, inM, exp_outM, exp_writeM, exp_addressM, exp_pc, exp_areg, exp_dreg, test_name
     (10, 30, 0, False, make_c_instr("D-A"),   0, 20,   False, 10, 1, 10, 30, "COMP: D-A"),
     (30, 10, 0, False, make_c_instr("A-D"),   0, 20,   False, 30, 1, 30, 10, "COMP: A-D"),
     (0x0F0F, 0x00FF, 0, False, make_c_instr("D&A"), 0, 0x000F, False, 0x0F0F, 1, 0x0F0F, 0x00FF, "COMP: D&A"),

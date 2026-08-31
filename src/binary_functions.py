@@ -76,6 +76,7 @@ def Add16(x: list, y: list) -> list:
     carry = 0
 
     for i in range(15, -1, -1):
+        print(i)
         add_list[i] = (x[i] + y[i] + carry) % 2
         carry =  (x[i] + y[i] + carry) // 2 
 
@@ -94,7 +95,7 @@ def And16(x: list, y: list) -> list:
 
     and_list = [0 for i in range(16)]
 
-    for i in range(15):
+    for i in range(16):
         and_list[i] = int(x[i] and y[i])
 
 
@@ -113,7 +114,7 @@ def Or16(x: list, y: list) -> list:
 
     or_list = [0 for i in range(16)]
 
-    for i in range(15):
+    for i in range(16):
         or_list[i] = int(x[i] or y[i])
 
 

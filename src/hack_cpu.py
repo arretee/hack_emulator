@@ -135,16 +135,18 @@ class HackCPU:
             self.alu_out = -self.register_a
 
         elif comp == COMP_D_PLUS_ONE:
-            new_bin = convert_dec_to_bin(self.register_d)
-            new_bin = Add16(new_bin, BINARY_ONE)
+            # x + 1 = !(!x + 111...1)
+            new_bin = Not16(convert_dec_to_bin(self.register_d))
+            new_bin = Add16(new_bin, BINARY_MINUS_ONE)
 
-            self.alu_out = convert_bin_to_dec(new_bin)
+            self.alu_out = convert_bin_to_dec(Not16(new_bin))
 
         elif comp == COMP_A_PLUS_ONE:
-            new_bin = convert_dec_to_bin(self.register_a)
-            new_bin = Add16(new_bin, BINARY_ONE)
+            # x + 1 = !(!x + 111...1)
+            new_bin = Not16(convert_dec_to_bin(self.register_a))
+            new_bin = Add16(new_bin, BINARY_MINUS_ONE)
 
-            self.alu_out = convert_bin_to_dec(new_bin)
+            self.alu_out = convert_bin_to_dec(Not16(new_bin))
 
         elif comp == COMP_D_MINUS_ONE:
             new_bin = convert_dec_to_bin(self.register_d)
@@ -165,28 +167,31 @@ class HackCPU:
             self.alu_out = convert_bin_to_dec(Add16(bin_d, bin_a))
 
         elif comp == COMP_D_MINUS_A:
-            bin_d = convert_dec_to_bin(self.register_d)
-            bin_a = Not16(convert_dec_to_bin(self.register_a))
-
-            self.alu_out = convert_bin_to_dec(Add16(bin_d, bin_a)) + 1
-
-        elif comp == COMP_A_MINUS_D:
+            # x - y = !(!x + y)
             bin_d = Not16(convert_dec_to_bin(self.register_d))
             bin_a = convert_dec_to_bin(self.register_a)
 
-            self.alu_out = convert_bin_to_dec(Add16(bin_a, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(Not16(Add16(bin_d, bin_a)))
+
+        elif comp == COMP_A_MINUS_D:
+            # x - y = !(!x + y)
+            bin_d = convert_dec_to_bin(self.register_d)
+            bin_a =  Not16(convert_dec_to_bin(self.register_a))
+
+            self.alu_out = convert_bin_to_dec(Not16(Add16(bin_a, bin_d)))
 
         elif comp == COMP_D_AND_A:
+            # x - y = !(!x + y)
             bin_d = convert_dec_to_bin(self.register_d)
             bin_a = convert_dec_to_bin(self.register_a)
 
-            self.alu_out = convert_bin_to_dec(And16(bin_a, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(And16(bin_a, bin_d))
 
         elif comp == COMP_D_OR_A:
             bin_d = convert_dec_to_bin(self.register_d)
             bin_a = convert_dec_to_bin(self.register_a)
 
-            self.alu_out = convert_bin_to_dec(Or16(bin_a, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(Or16(bin_a, bin_d))
 
         elif comp == COMP_M:
             self.alu_out = inM
@@ -198,10 +203,11 @@ class HackCPU:
             self.alu_out = -inM
 
         elif comp == COMP_M_PLUS_ONE:
-            new_bin = convert_dec_to_bin(inM)
-            new_bin = Add16(new_bin, BINARY_ONE)
+            # x + 1 = !(!x + 111...1)
+            new_bin = Not16(convert_dec_to_bin(inM))
+            new_bin = Add16(new_bin, BINARY_MINUS_ONE)
 
-            self.alu_out = convert_bin_to_dec(new_bin)
+            self.alu_out = convert_bin_to_dec(Not16(new_bin))
 
         elif comp == COMP_M_MINUS_ONE:
             new_bin = convert_dec_to_bin(inM)
@@ -216,31 +222,32 @@ class HackCPU:
             self.alu_out = convert_bin_to_dec(Add16(bin_d, bin_m))
 
         elif comp == COMP_D_MINUS_M:
-            bin_d = convert_dec_to_bin(self.register_d)
-            bin_m = Not16(convert_dec_to_bin(inM))
-
-            self.alu_out = convert_bin_to_dec(Add16(bin_d, bin_m)) + 1
-
-        elif comp == COMP_M_MINUS_D:
+            # x - y = !(!x + y)
             bin_d = Not16(convert_dec_to_bin(self.register_d))
             bin_m = convert_dec_to_bin(inM)
 
-            self.alu_out = convert_bin_to_dec(Add16(bin_m, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(Not16(Add16(bin_d, bin_m)))
+
+        elif comp == COMP_M_MINUS_D:
+            bin_d = convert_dec_to_bin(self.register_d)
+            bin_m = Not16(convert_dec_to_bin(inM))
+
+            self.alu_out = convert_bin_to_dec(Not16(Add16(bin_m, bin_d)))
 
         elif comp == COMP_D_AND_M:
             bin_d = convert_dec_to_bin(self.register_d)
             bin_m = convert_dec_to_bin(inM)
 
-            self.alu_out = convert_bin_to_dec(And16(bin_m, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(And16(bin_m, bin_d))
 
         elif comp == COMP_D_OR_M:
             bin_d = convert_dec_to_bin(self.register_d)
             bin_m = convert_dec_to_bin(inM)
 
-            self.alu_out = convert_bin_to_dec(Or16(bin_m, bin_d)) + 1
+            self.alu_out = convert_bin_to_dec(Or16(bin_m, bin_d))
 
         else:
-            raise ValueError("Hack CPU error, instruction COMP not found! instruction: " + str(instruction))
+            raise ValueError("Hack CPU error, instruction COMP not found! instruction: " + str(comp))
 
 
         return self.alu_out
