@@ -9,12 +9,12 @@ class HackComputer:
         self.cpu = HackCPU()
 
         # Memory
-        self.RAM = [0 for i in range(RAM_SIZE)]
-        self.ROM = [[0 for j in range(16)] for i in range(ROM_SIZE)]
+        self.RAM = [[0 for j in range(REGISTER_SIZE)] for i in range(RAM_SIZE)]     # EVERY CELL - BINARY 
+        self.ROM = [[0 for j in range(REGISTER_SIZE)] for i in range(ROM_SIZE)]     # EVERY CELL - BINARY
 
         # Cpu variables
-        self.pc = 0
-        self.addressM = 0
+        self.pc: int = 0
+        self.addressM: int = 0
 
 
 
@@ -27,7 +27,7 @@ class HackComputer:
 
 
     def execute_command(self) -> None:
-        outM, writeM, self.addressM, pc = self.cpu.execute_instruction(self.ROM[self.pc], self.RAM[self.addressM], False)
+        outM, writeM, self.addressM, pc = self.cpu.execute_instruction(self.ROM[self.pc].copy(), self.RAM[self.addressM].copy(), False)
 
         self.pc = pc
 

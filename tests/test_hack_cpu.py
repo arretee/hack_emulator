@@ -1,5 +1,6 @@
 import pytest
 from src.hack_cpu import HackCPU
+from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
 
 # Helper functions to construct binary instruction arrays
 def get_comp_bits(mnemonic: str) -> tuple[int, list[int]]:
@@ -131,20 +132,20 @@ test_data = [
     # --------------------------------------------------------------------------
     (500, 1,  10, False, make_c_instr("D", jump="JGT"), 0, 1,  False, 500, 500, 500, 1,  "JUMP: JGT success"),
     (500, 0,  10, False, make_c_instr("D", jump="JGT"), 0, 0,  False, 500, 11,  500, 0,  "JUMP: JGT fail (0)"),
-    (500, -1, 10, False, make_c_instr("D", jump="JGT"), 0, -1, False, 500, 11,  500, -1, "JUMP: JGT fail (-1)"),
+    (500, -1, 10, False, make_c_instr("D", jump="JGT"), 0, -1, False, 500, 11,  500, -1, "JUMP: JGT fail (-1)"),    #
     (500, 0,  10, False, make_c_instr("D", jump="JEQ"), 0, 0,  False, 500, 500, 500, 0,  "JUMP: JEQ success"),
     (500, 5,  10, False, make_c_instr("D", jump="JEQ"), 0, 5,  False, 500, 11,  500, 5,  "JUMP: JEQ fail"),
-    (500, 0,  10, False, make_c_instr("D", jump="JGE"), 0, 0,  False, 500, 500, 500, 0,  "JUMP: JGE success (0)"),
+    (500, 0,  10, False, make_c_instr("D", jump="JGE"), 0, 0,  False, 500, 500, 500, 0,  "JUMP: JGE success (0)"),  #
     (500, 1,  10, False, make_c_instr("D", jump="JGE"), 0, 1,  False, 500, 500, 500, 1,  "JUMP: JGE success (1)"),
     (500, -1, 10, False, make_c_instr("D", jump="JGE"), 0, -1, False, 500, 11,  500, -1, "JUMP: JGE fail"),
-    (500, -5, 10, False, make_c_instr("D", jump="JLT"), 0, -5, False, 500, 500, 500, -5, "JUMP: JLT success"),
+    (500, -5, 10, False, make_c_instr("D", jump="JLT"), 0, -5, False, 500, 500, 500, -5, "JUMP: JLT success"),  #
     (500, 0,  10, False, make_c_instr("D", jump="JLT"), 0, 0,  False, 500, 11,  500, 0,  "JUMP: JLT fail"),
-    (500, -1, 10, False, make_c_instr("D", jump="JNE"), 0, -1, False, 500, 500, 500, -1, "JUMP: JNE success"),
+    (500, -1, 10, False, make_c_instr("D", jump="JNE"), 0, -1, False, 500, 500, 500, -1, "JUMP: JNE success"),  #
     (500, 0,  10, False, make_c_instr("D", jump="JNE"), 0, 0,  False, 500, 11,  500, 0,  "JUMP: JNE fail"),
     (500, 0,  10, False, make_c_instr("D", jump="JLE"), 0, 0,  False, 500, 500, 500, 0,  "JUMP: JLE success (0)"),
-    (500, -1, 10, False, make_c_instr("D", jump="JLE"), 0, -1, False, 500, 500, 500, -1, "JUMP: JLE success (-1)"),
+    (500, -1, 10, False, make_c_instr("D", jump="JLE"), 0, -1, False, 500, 500, 500, -1, "JUMP: JLE success (-1)"), #
     (500, 1,  10, False, make_c_instr("D", jump="JLE"), 0, 1,  False, 500, 11,  500, 1,  "JUMP: JLE fail"),
-    (500, -5, 10, False, make_c_instr("D", jump="JMP"), 0, -5, False, 500, 500, 500, -5, "JUMP: JMP success"),
+    (500, -5, 10, False, make_c_instr("D", jump="JMP"), 0, -5, False, 500, 500, 500, -5, "JUMP: JMP success"),  #
 ]
 
 
@@ -157,15 +158,15 @@ def test_cpu(
 ):
     cpu = HackCPU()
 
-    cpu.register_a = areg
-    cpu.register_d = dreg
+    cpu.register_a = convert_dec_to_bin(areg)
+    cpu.register_d = convert_dec_to_bin(dreg)
     cpu.pc = start_pc
 
-    outM, writeM, addressM, pc = cpu.execute_instruction(instruction, inM, reset)
+    outM, writeM, addressM, pc = cpu.execute_instruction(instruction, convert_dec_to_bin(inM), reset)
 
-    assert outM == exp_outM, "Assert outM: " + test_name
+    assert convert_bin_to_dec(outM) == exp_outM, "Assert outM: " + test_name
     assert writeM == exp_writeM, "Assert writeM: " + test_name
     assert addressM == exp_addressM, "Assert addressM: " + test_name
     assert pc == exp_pc, "Assert pc: " + test_name
-    assert cpu.register_a == exp_areg, "Assert register_a: " + test_name
-    assert cpu.register_d == exp_dreg, "Assert register_d: " + test_name
+    assert convert_bin_to_dec(cpu.register_a) == exp_areg, "Assert register_a: " + test_name
+    assert convert_bin_to_dec(cpu.register_d) == exp_dreg, "Assert register_d: " + test_name

@@ -1,5 +1,7 @@
 from src.hack_config import MAX_POSITIVE_VALUE
 
+
+
 def convert_bin_to_dec(binary_list: list) -> int:
     """
         Function converts binary list to decimal value of hack CPU.
@@ -36,11 +38,19 @@ def convert_dec_to_bin(decimal: int) -> list:
 
     if decimal < 0:
         bin_list[0] = 1
-        decimal = -decimal - 1 
+        decimal = MAX_POSITIVE_VALUE + (-decimal)
 
-    for i in range(15):
-        bin_list[15 - i] = decimal % 2
-        decimal = decimal // 2
+        for i in range(15):
+            bin_list[15 - i] = int(not(decimal % 2))
+            decimal = decimal // 2
+
+    else: 
+        for i in range(15):
+            print(decimal)
+            bin_list[15 - i] = decimal % 2
+            decimal = decimal // 2
+
+
 
     return bin_list
 
