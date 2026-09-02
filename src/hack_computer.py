@@ -20,6 +20,11 @@ class HackComputer:
 
 
     def load_instructions(self, file_path: str) -> None:
+        """Funtion loads instructions from file into ROM memory of HackComputer
+
+        Args:
+            file_path (str): file path to load instructions from. Must be .hack file
+        """
         with open(file_path) as file:
             self.ROM = [[int(bit) for bit in line.rstrip()] for line in file]
 
@@ -27,6 +32,9 @@ class HackComputer:
 
 
     def execute_command(self) -> None:
+        """
+            Function executes command from an next ROM address that is stored in self.pc.
+        """
         outM, writeM, self.addressM, pc = self.cpu.execute_instruction(self.ROM[self.pc].copy(), self.RAM[self.addressM].copy(), False)
 
         self.pc = pc
