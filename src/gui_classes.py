@@ -31,8 +31,13 @@ class TextSprite(pygame.sprite.Sprite):
             text (str): new text
         """
         
-        if text != self.text or ((color is not None) and color != self.color):
+        if (text != self.text) or (color is not None):
             self.text = text
             
-            self.image = self.font.render(text, True, self.color if color is None else color)
+            self.image = self.font.render(text, True, color)
             self.rect = self.image.get_rect(topleft=self.pos)
+            
+
+            
+            
+

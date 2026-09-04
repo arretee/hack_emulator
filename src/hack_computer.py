@@ -26,7 +26,9 @@ class HackComputer:
             file_path (str): file path to load instructions from. Must be .hack file
         """
         with open(file_path) as file:
-            self.ROM = [[int(bit) for bit in line.rstrip()] for line in file]
+            for index, line in enumerate(file):
+                self.ROM[index] = [int(bit) for bit in line.rstrip()]
+           
 
         self.pc = 0
 

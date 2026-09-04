@@ -9,15 +9,15 @@ class Panel(pygame.sprite.Sprite):
                 pos: list[int, int], 
                 size: list[int, int], 
                   
-                text_lable: str, 
-                font_lable: pygame.font.Font,
+                text_title: str, 
+                font_title: pygame.font.Font,
                 
                 table_size: list[int, int], 
                 table_data: list,
                 font_data: pygame.font.Font, 
 
                 title_color: str = COLOR_TEXT_TITLE,
-                pos_lable: list[int, int] = [0, 0],  
+                pos_title: list[int, int] = [0, 0],  
                 
                 
                 table_colors: list = None,
@@ -27,11 +27,46 @@ class Panel(pygame.sprite.Sprite):
                 table_gaps: list[int, int] = [0, 0],
                 
                 panel_background_color: str = COLOR_PANEL_BACKGROUND,
-                selected_row: int = -1,
-                selected_row_background_color: str = COLOR_PANEL_CHOOSE_ROW,
+                panel_border_color: str = COLOR_PANEL_BORDER,
                 
                 groups: list[pygame.sprite.Group] = []
             ):
+        """
+        Class panel to represent data in tables for pygame
+
+        :param pos: position of an panel (topleft corner)
+        :type pos: list[int, int]
+        :param size: size of an panel [width, height]
+        :type size: list[int, int]
+        :param text_title: title of an panel
+        :type text_title: str
+        :param font_title: title font
+        :type font_title: pygame.font.Font
+        :param table_size: table size that panel will represent (rows, cols)
+        :type table_size: list[int, int]
+        :param table_data: matrix by size of table size that filled width string for each table place
+        :type table_data: matrix
+        :param font_data: font for table values
+        :type font_data: pygame.font.Font
+        :param title_color: color for title, string hex, example: "#ffffff", defaults to COLOR_TEXT_TITLE
+        :type title_color: str, optional
+        :param pos_title: position of title on panel, defaults to [0, 0]
+        :type pos_title: list[int, int], optional
+        :param table_colors: matrix of colors for each matrix place, defaults to COLOR_TEXT_DEFAULT for each
+        :type table_colors: list, optional
+        :param table_ratios_cols: size ratios between table cols [2, 1] -> |xx|x| , defaults to each seted to one
+        :type table_ratios_cols: list, optional
+        :param table_ratios_rows: size ratios between table rows [2, 1] -> |xx|x| , defaults to each seted to one
+        :type table_ratios_rows: list, optional
+        :param table_gaps: gaps between table values, defaults to [0, 0]
+        :type table_gaps: list[int, int], optional
+        :param panel_background_color: bg color of panel, defaults to COLOR_PANEL_BACKGROUND
+        :type panel_background_color: str, optional
+        :param panel_border_color: border of panel color, defaults to COLOR_PANEL_BORDER
+        :type panel_border_color: str, optional
+        :param groups: groups to add the object in, defaults to []
+        :type groups: list[pygame.sprite.Group], optional
+        """
         super().__init__(groups)
 
         # Cover default values 
@@ -51,8 +86,6 @@ class Panel(pygame.sprite.Sprite):
         self.width, self.height = size        
         
         self.bg_color = panel_background_color
-        self.selecter_row = -1
-        self.selcted_row_color = selected_row_background_color
         
         # Pygame variables  
         self.texts_group = pygame.sprite.Group()    # Stores all the Text Tiles for table
@@ -61,13 +94,13 @@ class Panel(pygame.sprite.Sprite):
         
         
         
-        # Lable
-        self.label_text = text_lable
-        self.lable = TextSprite(
-            text_lable,
-            font_lable,
+        # title
+        self.title_text = text_title
+        self.title = TextSprite(
+            text_title,
+            font_title,
             title_color,
-            pos_lable,
+            pos_title,
             
             groups = self.texts_group
         )
@@ -123,7 +156,7 @@ class Panel(pygame.sprite.Sprite):
         
         # Calculate table size (panel_width - gap * (cols + 1), panel_height - title.bottom - gap * (rows + 1))
         width = self.width - table_gaps[1] * (self.table_size[1] + 1)
-        height = self.height - self.lable.rect.bottom - table_gaps[0] * (self.table_size[0] + 1)
+        height = self.height - self.title.rect.bottom - table_gaps[0] * (self.table_size[0] + 1)
         
         
         # Caclulate sizes of each row and col
@@ -142,7 +175,7 @@ class Panel(pygame.sprite.Sprite):
             for col in range(self.table_size[1]):
                 pos = [
                     (col + 1) * table_gaps[1] + sum(cols_sizes[0: col]), 
-                    self.lable.rect.bottom + (row + 1) * table_gaps[0] + sum(rows_sizes[0: row])
+                    self.title.rect.bottom + (row + 1) * table_gaps[0] + sum(rows_sizes[0: row])
                 ]
         
                 self.table[row][col] = TextSprite(

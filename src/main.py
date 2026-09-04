@@ -1,10 +1,13 @@
 import time
 
+# Hack computer imports
 from src.hack_computer import HackComputer
 from src.hack_config import *
-
 from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
+
+# Gui imports 
 from src.gui_emulator import GuiEmulator
+from src.gui_config import MAX_GUI_SPEED
 
 
 class HackEmulator:
@@ -24,9 +27,9 @@ class HackEmulator:
         while True:
             self.gui.run()
             
-            self.hack_pc.execute_command()
-            
-            time.sleep((MAX_GUI_SPEED - self.gui.gui_speed) / 1000)
+            if self.gui.run_hack_computer:
+                self.hack_pc.execute_command()
+                time.sleep((MAX_GUI_SPEED - self.gui.gui_speed) / 1000)
             
             
 

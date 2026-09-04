@@ -1,4 +1,3 @@
-
 # -------------------------------------------- Hack Computer Constants --------------------------------------------
 RAM_SIZE = 24577
 ROM_SIZE = 32768
@@ -22,7 +21,7 @@ R14 = 14
 R15 = 15
 SCREEN = 16384
 KBD = 24756
-
+    
 
 
 # -------------------------------------------- Binary Constatnts --------------------------------------------
@@ -87,5 +86,116 @@ JUMP_JMP  = [1, 1, 1]
 
 
 
+# -------------------------------------------- Disassemle Functions --------------------------------------------
+from src.binary_functions import convert_bin_to_dec
+
+def get_comp_by_sublist(sublist: list) -> str:
+    """ Function converts sublit of a c c c c c c from hack instruction to string comp
+
+    Args:
+        sublist (list): part of instruction that creates comp [a, c, c, c, c, c, c]
+
+    Returns:
+        str: str comp
+    """
+    if sublist == [0, 1, 0, 1, 0, 1, 0]: return "0"
+    if sublist == [0, 1, 1, 1, 1, 1, 1]: return "1"
+    if sublist == [0, 1, 1, 1, 0, 1, 0]: return "-1"
+    if sublist == [0, 0, 0, 1, 1, 0, 0]: return "D"
+    if sublist == [0, 1, 1, 0, 0, 0, 0]: return "A"
+    if sublist == [0, 0, 0, 1, 1, 0, 1]: return "!D"
+    if sublist == [0, 1, 1, 0, 0, 0, 1]: return "!A"
+    if sublist == [0, 0, 0, 1, 1, 1, 1]: return "-D"
+    if sublist == [0, 1, 1, 0, 0, 1, 1]: return "-A"
+    if sublist == [0, 0, 1, 1, 1, 1, 1]: return "D+1"
+    if sublist == [0, 1, 1, 0, 1, 1, 1]: return "A+1"
+    if sublist == [0, 0, 0, 1, 1, 1, 0]: return "D-1"
+    if sublist == [0, 1, 1, 0, 0, 1, 0]: return "A-1"
+    if sublist == [0, 0, 0, 0, 0, 1, 0]: return "D+A"
+    if sublist == [0, 0, 1, 0, 0, 1, 1]: return "D-A"
+    if sublist == [0, 0, 0, 0, 1, 1, 1]: return "A-D"
+    if sublist == [0, 0, 0, 0, 0, 0, 0]: return "D&A"
+    if sublist == [0, 0, 1, 0, 1, 0, 1]: return "D|A"
+    if sublist == [1, 1, 1, 0, 0, 0, 0]: return "M"
+    if sublist == [1, 1, 1, 0, 0, 0, 1]: return "!M"
+    if sublist == [1, 1, 1, 0, 0, 1, 1]: return "-M"
+    if sublist == [1, 1, 1, 0, 1, 1, 1]: return "M+1"
+    if sublist == [1, 1, 1, 0, 0, 1, 0]: return "M-1"
+    if sublist == [1, 0, 0, 0, 0, 1, 0]: return "D+M"
+    if sublist == [1, 0, 1, 0, 0, 1, 1]: return "D-M"
+    if sublist == [1, 0, 0, 0, 1, 1, 1]: return "M-D"
+    if sublist == [1, 0, 0, 0, 0, 0, 0]: return "D&M"
+    if sublist == [1, 0, 1, 0, 1, 0, 1]: return "D|A"
+
+def get_jump_by_sublist(sublist: list) -> str:
+    """ Function converts sublit of [j, j, j] from hack instruction to string jump
+
+    Args:
+        sublist (list): part of instruction that creates jump [j, j, j]
+
+    Returns:
+        str: str jump
+    """
+    
+    if sublist == [0, 0, 0]: return ""
+    if sublist == [0, 0, 1]: return "JGT"
+    if sublist == [0, 1, 0]: return "JEQ"
+    if sublist == [0, 1, 1]: return "JGE"
+    if sublist == [1, 0, 0]: return "JLG"
+    if sublist == [1, 0, 1]: return "JNE"
+    if sublist == [1, 1, 0]: return "JLE"
+    if sublist == [1, 1, 1]: return "JMP"
+
+    
+def dissasemble_A_instruction(instruction: list) -> str:
+    """ Function dissasebles the A hack instruction from binary to str
+
+    Args:
+        instruction (list): instruction from 16 bits
+    """
 
 
+    return "@" + str(convert_bin_to_dec(instruction))
+
+def dissasemble_C_instruction(instruction: list) -> str:
+    """ Function dissasebles the C hack instruction from binary to str
+
+    Args:
+        instruction (list): instruction from 16 bits
+    """
+    
+    dest = ""    
+    
+    # Dest 
+    if instruction[10] is 1:
+        dest += "A"
+        
+    if instruction[11] is 1:
+        dest += "D"
+        
+    if instruction[12] is 1:
+        dest += "M"
+        
+    if dest != "":
+        dest += "="
+        
+    comp = get_comp_by_sublist(instruction[3:10])
+    jump = get_jump_by_sublist(instruction[13:16])
+    
+    if jump != "":
+        jump = ";" + jump
+        
+    return dest + comp + jump
+ 
+def disassemble_instruction(instruction: list) -> str:
+    """ Function dissasebles hack instruction from binary to str
+
+    Args:
+        instruction (list): instruction from 16 bits
+    """
+
+    if instruction[0]:
+        return dissasemble_C_instruction(instruction)
+    
+    else:
+        return dissasemble_A_instruction(instruction)   

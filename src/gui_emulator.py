@@ -1,13 +1,13 @@
 import pygame
 import sys
 
-from src.hack_computer import HackComputer
+from src.gui_panel import Panel
 from src.gui_config import *
 
+
 from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
-
-
-from src.gui_panel import Panel
+from src.hack_computer import HackComputer
+import src.hack_config
 
 
 class GuiEmulator:
@@ -40,6 +40,8 @@ class GuiEmulator:
         self.gui_speed = DEFALUT_GUI_SPEED
         self.exit_status = False
         
+        self.run_hack_computer = False
+        
         
     def create_panels(self):
         """
@@ -49,9 +51,9 @@ class GuiEmulator:
             pos = PANEL_REGISTERS_POS,
             size = PANEL_REGISTERS_SIZE,
             
-            text_lable = PANEL_REGISTERS_TITLE,
-            font_lable = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_REGISTERS_TITLE_FONT_SIZE),
-            pos_lable = PANEL_REGISTERS_TITLE_POS,
+            text_title = PANEL_REGISTERS_TITLE,
+            font_title = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_REGISTERS_TITLE_FONT_SIZE),
+            pos_title = PANEL_REGISTERS_TITLE_POS,
             
             
             table_size = PANEL_REGISTERS_TABLE_SIZE,
@@ -68,13 +70,12 @@ class GuiEmulator:
             groups = [self.panels]            
         )
         
-        
         self.panel_ram = Panel(
             pos = PANEL_RAM_POS,
             size = PANEL_RAM_SIZE,
-            text_lable = PANEL_RAM_TITLE,
-            font_lable = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_RAM_TITLE_FONT_SIZE),
-            pos_lable = PANEL_RAM_TITLE_POS,
+            text_title = PANEL_RAM_TITLE,
+            font_title = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_RAM_TITLE_FONT_SIZE),
+            pos_title = PANEL_RAM_TITLE_POS,
             
             table_size= PANEL_RAM_TABLE_SIZE,
             table_data= PANEL_RAM_DATA_SAMPLE,
@@ -89,6 +90,26 @@ class GuiEmulator:
             groups=[self.panels]
         )
 
+        self.panel_rom = Panel(
+            pos = PANEL_ROM_POS,
+            size = PANEL_ROM_SIZE,
+            text_title = PANEL_ROM_TITLE,
+            font_title = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_ROM_TITLE_FONT_SIZE),
+            pos_title = PANEL_ROM_TITLE_POS,
+            
+            table_size= PANEL_ROM_TABLE_SIZE,
+            table_data= PANEL_ROM_DATA_SAMPLE,
+            table_colors= PANEL_ROM_COLORS,
+            font_data= pygame.font.SysFont(PANEL_TEXT_FONT, PANEL_ROM_TEXT_FONT_SIZE),
+        
+        
+            table_ratios_cols= PANEL_ROM_COLS_RATIOS,
+            
+            table_gaps= PANEL_ROM_GAPS,
+            
+            groups=[self.panels]
+        )
+        
 
     def update(self):
         """ 
@@ -96,6 +117,9 @@ class GuiEmulator:
         """
         self.panel_registers.update_data(self.registers_panel_data())
         self.panel_ram.update_data(self.ram_panel_data())
+        
+        rom_data, rom_colors = self.rom_panel_data()
+        self.panel_rom.update_data(data = rom_data, colors=rom_colors)
         
         
         self.panels.update()        
@@ -113,24 +137,31 @@ class GuiEmulator:
         
         
         for row in range(self.panel_registers.table_size[0]):
+            # Get value by row
             if row == 0:
+                # A Register
                 value = convert_bin_to_dec(self.hack_computer.cpu.register_a)
             
             elif row == 1:
+                # D Register
                 value = convert_bin_to_dec(self.hack_computer.cpu.register_d)
                 
             elif row == 2:
+                # M ram Value
                 value = convert_bin_to_dec(self.hack_computer.RAM[self.hack_computer.addressM])
             
             elif row == 3:
+                # PC 
                 value = self.hack_computer.pc
                 
             else:
+                # unknown row
                 value = 0
                 
                     
             
             for col in range(self.panel_registers.table_size[1]):
+                # Get data by col and row value
                 if col == 0:
                     data[row][col] = PANEL_REGISTERS_DATA_SAMPLE[row][col]
                     
@@ -143,8 +174,6 @@ class GuiEmulator:
                 if col == 3:
                     data[row][col] = "".join([str(bit) for bit in convert_dec_to_bin(value)])
                 
-                else:
-                    data[row][col] = str(value)
                     
 
         
@@ -158,31 +187,90 @@ class GuiEmulator:
             :return: returns matrix of strings by size of the panel ram with relevent data to state of hack computer
         """
         
+        
+        # Get data for ram panel
         data = [["" for _ in range(self.panel_ram.table_size[1])] for __ in range(self.panel_ram.table_size[0])]
         
         for row in range(self.panel_ram.table_size[0]):
             for col in range(self.panel_ram.table_size[1]):
                 if col == 0:
+                    # ram number
                     data[row][col] = str(row)
                 
                 elif col == 1:
+                    # ram name if exists
                     data[row][col] = get_ram_name(row)
                 
                 elif col == 2:
+                    # decimal value
                     data[row][col] = str(convert_bin_to_dec(self.hack_computer.RAM[row]))
                     
                 elif col == 3:
+                    # hex value
                     data[row][col] = str(hex(convert_bin_to_dec(self.hack_computer.RAM[row])))
                     
                 elif col == 4:
+                    # bin value
                     data[row][col] = "".join([str(x) for x in self.hack_computer.RAM[row]])
-                    
                     
         return data
                                 
+    
+    def rom_panel_data(self) -> list[list, list, int]:    
+        """
+            Method create data for rom panel
             
-
+            :return: list by size of 3 -> [data matrix, colors matrix, select_row]
+        """
+        # Get center_pc(int) of table and selected row 
+        if self.hack_computer.pc  + PANEL_ROM_TABLE_SIZE[0] / 2 > src.hack_config.ROM_SIZE - 1:
+            center_pc = src.hack_config.ROM_SIZE - PANEL_ROM_TABLE_SIZE[0] / 2
+            selected_row = PANEL_ROM_TABLE_SIZE[0] - (src.hack_config.ROM_SIZE - self.hack_computer.pc)
+            
         
+        elif self.hack_computer.pc - PANEL_ROM_TABLE_SIZE[0] / 2 < 0:
+            center_pc = PANEL_ROM_TABLE_SIZE[0] / 2
+            selected_row = self.hack_computer.pc
+            
+            
+        else:
+            center_pc = self.hack_computer.pc
+            selected_row = self.hack_computer.pc - (center_pc - PANEL_ROM_TABLE_SIZE[0] / 2)
+            
+        
+        # Get rom sublist for table
+        rom_start = int(center_pc - PANEL_ROM_TABLE_SIZE[0] / 2)
+        rom_end = int(center_pc + PANEL_ROM_TABLE_SIZE[0] / 2)
+        
+        rom = self.hack_computer.ROM[rom_start:rom_end]
+        
+        
+        # Generate data and colors 
+        data = [[None for _ in range(PANEL_ROM_TABLE_SIZE[1])] for __ in range(PANEL_ROM_TABLE_SIZE[0])]
+        colors = [[COLOR_TEXT_DEFAULT for _ in range(PANEL_ROM_TABLE_SIZE[1])] for __ in range(PANEL_ROM_TABLE_SIZE[0])]
+        
+        
+        for row in range(PANEL_ROM_TABLE_SIZE[0]):
+            instruction = rom[row]
+            
+            
+            for col in range(PANEL_ROM_TABLE_SIZE[1]):
+                if col == 0:
+                    data[row][col] = str(row + rom_start)
+
+                if col == 1:
+                    data[row][col] = "".join([str(x) for x in instruction])
+                    
+                if col == 2:
+                    data[row][col] = src.hack_config.disassemble_instruction(instruction)
+                
+                # Change color of selected row
+                if row == selected_row:
+                    colors[row][col] = COLOR_TEXT_YELLOW
+                    
+        return [data, colors]
+
+    
     def events_handler(self):
         """
             Function cover events handling for gui emulator
@@ -195,6 +283,12 @@ class GuiEmulator:
                 pygame.quit()
                 sys.exit()
                 return
+            
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    self.run_hack_computer = not self.run_hack_computer               
+                
+                
 
 
     def run(self):
