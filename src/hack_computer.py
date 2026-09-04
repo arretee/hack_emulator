@@ -40,6 +40,8 @@ class HackComputer:
         outM, writeM, self.addressM, pc = self.cpu.execute_instruction(self.ROM[self.pc].copy(), self.RAM[self.addressM].copy(), False)
 
         self.pc = pc
+        if self.pc >= ROM_SIZE:
+            raise ValueError("Program Counter exited ROM.")
 
         if writeM:
             self.RAM[self.addressM] = outM

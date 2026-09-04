@@ -17,8 +17,9 @@ WINDOW_FPS = 120
 
 # --------------------------------------------- GUI ---------------------------------------------
 MAX_GUI_SPEED = 1000
-DEFALUT_GUI_SPEED = 500
-MIN_GUI_SPEED = 10
+DEFALUT_GUI_SPEED = 1000
+MIN_GUI_SPEED = 100
+GUI_SPEED_CHANGE = 100
 
 # -------------------------------------------- Colors --------------------------------------------
 COLOR_TEXT_TITLE = "#7a8294" 
@@ -37,6 +38,12 @@ COLOR_PANEL_CHOOSE_ROW = "#ffffff"
 
 COLOR_WINDOW_BACKGROUND = "#12141a"
 
+# -------------------------------------------- Key Binds --------------------------------------------
+KEYBIND_PAUSE = pygame.K_SPACE
+KEYBIND_INCREASE_SPEED = pygame.K_PERIOD
+KEYBIND_DECREASE_SPEED = pygame.K_COMMA
+
+
 
 
 # --------------------------------------------- Widgets --------------------------------------------
@@ -47,7 +54,7 @@ EMULATOR_SCREEN_SIZE = (512, 256)
 EMULATOR_SCREEN_WIDTH, EMULATOR_SCREEN_HEIGHT = EMULATOR_SCREEN_SIZE
 
 
-PANEL_TITLE_FONT = "David"
+PANEL_TITLE_FONT = "liberationserif"
 PANEL_TEXT_FONT = "Arial"
 
 
@@ -143,7 +150,7 @@ PANEL_ROM_POS = (
 PANEL_ROM_TABLE_SIZE = (20, 3)
 
 PANEL_ROM_TITLE = "ROM {disassemble live}"
-PANEL_ROM_TITLE_FONT_SIZE = 35
+PANEL_ROM_TITLE_FONT_SIZE = 30
 PANEL_ROM_TITLE_POS = (10, 10)
 
 PANEL_ROM_TEXT_FONT_SIZE = 15
@@ -157,3 +164,42 @@ PANEL_ROM_COLORS = [
 PANEL_ROM_COLS_RATIOS = [5, 16, 8]
 
 PANEL_ROM_GAPS = (10, 10)
+
+# Panel ROM
+PANEL_STATE_RUNNING = "RUNNING"
+PANEL_STATE_PAUSED = "PAUSED"
+
+PANEL_STATE_SIZE = (
+    WINDOW_WIDTH - EMULATOR_SCREEN_WIDTH - PANEL_REGISTERS_SIZE[0] - PANEL_GAP * 4,
+    PANEL_REGISTERS_SIZE[1]
+)
+
+PANEL_STATE_POS = (
+    PANEL_REGISTERS_POS[0] + PANEL_REGISTERS_SIZE[0] + PANEL_GAP,
+    PANEL_GAP
+)
+
+PANEL_STATE_TABLE_SIZE = (3, 2)
+
+PANEL_STATE_TITLE = "State"
+PANEL_STATE_TITLE_FONT_SIZE = 35
+PANEL_STATE_TITLE_POS = (10, 10)
+
+PANEL_STATE_TEXT_FONT_SIZE = 15
+
+PANEL_STATE_DATA_SAMPLE = [
+    ["Program", "no prog"],
+    ["State", PANEL_STATE_PAUSED],
+    ["Speed", "low [----*----] high"],
+]
+
+
+PANEL_STATE_COLORS = [
+    [COLOR_TEXT_TITLE, COLOR_TEXT_DEFAULT],
+    [COLOR_TEXT_TITLE, COLOR_TEXT_RED],
+    [COLOR_TEXT_TITLE, COLOR_TEXT_DEFAULT]
+]
+
+PANEL_STATE_COLS_RATIOS = [7, 15]
+
+PANEL_STATE_GAPS = (10, 10)

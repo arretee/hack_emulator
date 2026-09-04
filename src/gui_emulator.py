@@ -40,6 +40,8 @@ class GuiEmulator:
         self.gui_speed = DEFALUT_GUI_SPEED
         self.exit_status = False
         
+        self.current_file = "Mult.hack"
+        
         self.run_hack_computer = False
         
         
@@ -110,7 +112,26 @@ class GuiEmulator:
             groups=[self.panels]
         )
         
-
+        self.panel_state = Panel(
+            pos = PANEL_STATE_POS,
+            size = PANEL_STATE_SIZE,
+            text_title = PANEL_STATE_TITLE,
+            font_title = pygame.font.SysFont(PANEL_TITLE_FONT, PANEL_STATE_TITLE_FONT_SIZE),
+            pos_title = PANEL_STATE_TITLE_POS,
+            
+            table_size= PANEL_STATE_TABLE_SIZE,
+            table_data= PANEL_STATE_DATA_SAMPLE,
+            table_colors= PANEL_STATE_COLORS,
+            font_data= pygame.font.SysFont(PANEL_TEXT_FONT, PANEL_STATE_TEXT_FONT_SIZE),
+        
+        
+            table_ratios_cols= PANEL_STATE_COLS_RATIOS,
+            
+            table_gaps= PANEL_STATE_GAPS,
+            
+            groups=[self.panels]
+        )
+        
     def update(self):
         """ 
             Update the state of an emulator
@@ -120,6 +141,9 @@ class GuiEmulator:
         
         rom_data, rom_colors = self.rom_panel_data()
         self.panel_rom.update_data(data = rom_data, colors=rom_colors)
+        
+        state_data, state_colors = self.state_panel_data()
+        self.panel_state.update_data(data = state_data, colors = state_colors)
         
         
         self.panels.update()        
@@ -271,6 +295,30 @@ class GuiEmulator:
         return [data, colors]
 
     
+    def state_panel_data(self) -> list[list, list]:
+        """ Method create data and colors fo state panel
+
+        Returns:
+            list[list, list]: list of 2 lists -> [data matrix, colors matrix]
+        """
+        
+        
+        speed = ((self.gui_speed // 100) - 1) * "-" + "*" + "-" * ((MAX_GUI_SPEED - self.gui_speed) // 100)
+        speed = "low[" + speed + "]high" 
+        
+        
+        colors = [[PANEL_STATE_COLORS[row][col] for col in range(PANEL_STATE_TABLE_SIZE[1])] for row in range(PANEL_STATE_TABLE_SIZE[0])]
+        colors[1][1] = COLOR_TEXT_GREEN if self.run_hack_computer else COLOR_TEXT_RED
+        
+        data = [
+            ["Program", self.current_file],
+            ["State", PANEL_STATE_RUNNING if self.run_hack_computer else PANEL_STATE_PAUSED],
+            ["Speed", speed],
+        ]
+        
+        return [data, colors]
+
+
     def events_handler(self):
         """
             Function cover events handling for gui emulator
@@ -285,11 +333,18 @@ class GuiEmulator:
                 return
             
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    self.run_hack_computer = not self.run_hack_computer               
-                
-                
+                # Pause the program 
+                if event.key == KEYBIND_PAUSE:
+                    self.run_hack_computer = not self.run_hack_computer              
 
+                # Change speed to higher
+                if event.key == KEYBIND_INCREASE_SPEED:
+                    self.gui_speed = min(MAX_GUI_SPEED, self.gui_speed + GUI_SPEED_CHANGE)
+                
+                # Change speed to lower.
+                if event.key == KEYBIND_DECREASE_SPEED:
+                    self.gui_speed = max(MIN_GUI_SPEED, self.gui_speed - GUI_SPEED_CHANGE)
+                                
 
     def run(self):
         # Work on events
