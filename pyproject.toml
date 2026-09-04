@@ -1,0 +1,31 @@
+[build-system]
+
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Hack_Emulator_arretee"
+version = "0.0.1"
+authors = [
+    {name = "arretee", email="arreteear@gmail.com"}
+]
+description = "Hack emulator gui for running hack bin code"
+readme = "README.md"
+requires-python = ">=3.9"
+
+license = "MIT"
+license-files = ["LICENSE"]
+dependecies = [
+    "pygame"
+]
+
+
+[project.optional-dependecies]
+test = ["pytest]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+
+[project.scripts]
+run-emulator = "main:main"

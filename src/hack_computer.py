@@ -40,8 +40,6 @@ class HackComputer:
         self.pc = pc
 
         if writeM:
-            print(f"Adress {self.addressM} = ", outM)
-            print()
             self.RAM[self.addressM] = outM
 
         

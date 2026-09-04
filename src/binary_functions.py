@@ -46,7 +46,6 @@ def convert_dec_to_bin(decimal: int) -> list:
 
     else: 
         for i in range(15):
-            print(decimal)
             bin_list[15 - i] = decimal % 2
             decimal = decimal // 2
 
@@ -86,7 +85,6 @@ def Add16(x: list, y: list) -> list:
     carry = 0
 
     for i in range(15, -1, -1):
-        print(i)
         add_list[i] = (x[i] + y[i] + carry) % 2
         carry =  (x[i] + y[i] + carry) // 2 
 
