@@ -167,13 +167,13 @@ def dissasemble_C_instruction(instruction: list) -> str:
     dest = ""    
     
     # Dest 
-    if instruction[10] is 1:
+    if instruction[10] == 1:
         dest += "A"
         
-    if instruction[11] is 1:
+    if instruction[11] == 1:
         dest += "D"
         
-    if instruction[12] is 1:
+    if instruction[12] == 1:
         dest += "M"
         
     if dest != "":
