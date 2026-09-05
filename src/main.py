@@ -16,7 +16,11 @@ class HackEmulator:
         self.hack_pc = HackComputer()
         self.gui = GuiEmulator(self.hack_pc)
         
-        
+    
+        for i in range(SCREEN_REGISTERS_NUM):
+            if i % 2:
+                self.hack_pc.RAM[SCREEN + i] = convert_dec_to_bin(-1)
+
         self.hack_pc.RAM[0] = convert_dec_to_bin(5)
         self.hack_pc.RAM[1] = convert_dec_to_bin(20)
         

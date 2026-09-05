@@ -2,6 +2,7 @@ import pygame
 import sys
 
 from src.gui_panel import Panel
+from src.gui_screen import GuiScreen
 from src.gui_config import *
 
 
@@ -35,6 +36,8 @@ class GuiEmulator:
         self.panels = pygame.sprite.Group()
         self.create_panels()
         
+        # Create Screen
+        self.screen = GuiScreen((PANEL_GAP, PANEL_GAP), self.hack_computer)
         
         # Variables
         self.gui_speed = DEFALUT_GUI_SPEED
@@ -132,10 +135,12 @@ class GuiEmulator:
             groups=[self.panels]
         )
         
+
     def update(self):
         """ 
             Update the state of an emulator
         """
+        # Update Panels data
         self.panel_registers.update_data(self.registers_panel_data())
         self.panel_ram.update_data(self.ram_panel_data())
         
@@ -145,7 +150,10 @@ class GuiEmulator:
         state_data, state_colors = self.state_panel_data()
         self.panel_state.update_data(data = state_data, colors = state_colors)
         
+        # Update screen
+        self.screen.update()
         
+        # Update draws panel
         self.panels.update()        
         
         
@@ -358,6 +366,9 @@ class GuiEmulator:
         
         # Draw objects
         self.panels.draw(self.window)
+        self.window.blit(self.screen.image, self.screen.rect)
+        
+        
 
         # timeout for fps
         self.clock.tick(WINDOW_FPS)
