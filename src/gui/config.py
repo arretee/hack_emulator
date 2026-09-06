@@ -38,13 +38,11 @@ COLOR_PANEL_CHOOSE_ROW = "#ffffff"
 
 COLOR_WINDOW_BACKGROUND = "#12141a"
 
-# -------------------------------------------- Key Binds --------------------------------------------
-KEYBIND_PAUSE = pygame.K_SPACE
-KEYBIND_INCREASE_SPEED = pygame.K_PERIOD
-KEYBIND_DECREASE_SPEED = pygame.K_COMMA
 
-
-
+COLOR_BUTTON_TEXT = "#71bc83"
+COLOR_BUTTON_MAIN = "#343c4e"
+COLOR_BUTTON_SECOND = "#12141a"
+COLOR_BUTTON_BORDER = "#dc9949"
 
 # --------------------------------------------- Widgets --------------------------------------------
 PANEL_GAP = 20
@@ -203,3 +201,16 @@ PANEL_STATE_COLORS = [
 PANEL_STATE_COLS_RATIOS = [7, 15]
 
 PANEL_STATE_GAPS = (10, 10)
+
+
+
+# --------------------------------------------- Buttons ---------------------------------------------
+BUTTON_TEXT_FONT_NAME = "Arial"
+
+
+BUTTON_PAUSE_POS = (PANEL_ROM_POS[0] + PANEL_ROM_SIZE[0] + PANEL_GAP, PANEL_ROM_POS[1])
+BUTTON_PAUSE_SIZE = (WINDOW_WIDTH - BUTTON_PAUSE_POS[0] - PANEL_GAP, 50)
+BUTTON_PAUSE_TEXT = "Run / Pause"
+BUTTON_PAUSE_FONT_SIZE = 30
+BUTTON_PAUSE_BORDERS_SIZE = 10
+

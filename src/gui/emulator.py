@@ -3,6 +3,7 @@ import sys
 
 from src.gui.panel import Panel
 from src.gui.gui_screen import GuiScreen
+from src.gui.button import Button
 from src.gui.config import *
 
 
@@ -36,6 +37,10 @@ class GuiEmulator:
         self.panels = pygame.sprite.Group()
         self.create_panels()
         
+        # Create buttons
+        self.buttons = pygame.sprite.Group()
+        self.create_buttons()
+        
         # Create Screen
         self.screen = GuiScreen((PANEL_GAP, PANEL_GAP), self.hack_computer)
         
@@ -48,6 +53,7 @@ class GuiEmulator:
         self.run_hack_computer = False
         
         
+    # ---------------------------- Panels ----------------------------
     def create_panels(self):
         """
         Method creates panels for the gui
@@ -133,28 +139,7 @@ class GuiEmulator:
             table_gaps= PANEL_STATE_GAPS,
             
             groups=[self.panels]
-        )
-        
-
-    def update(self):
-        """ 
-            Update the state of an emulator
-        """
-        # Update Panels data
-        self.panel_registers.update_data(self.registers_panel_data())
-        self.panel_ram.update_data(self.ram_panel_data())
-        
-        rom_data, rom_colors = self.rom_panel_data()
-        self.panel_rom.update_data(data = rom_data, colors=rom_colors)
-        
-        state_data, state_colors = self.state_panel_data()
-        self.panel_state.update_data(data = state_data, colors = state_colors)
-        
-        # Update screen
-        self.screen.update()
-        
-        # Update draws panel
-        self.panels.update()        
+        )     
         
         
     def registers_panel_data(self):
@@ -326,6 +311,59 @@ class GuiEmulator:
         
         return [data, colors]
 
+    # ---------------------------- Buttons ----------------------------
+    def create_buttons(self):
+        """
+            Method creates buttons and store them inside buttons group
+        """
+
+        self.button_pause = Button(
+            pos = BUTTON_PAUSE_POS,
+            size = BUTTON_PAUSE_SIZE,
+            text = BUTTON_PAUSE_TEXT,
+            font = pygame.font.SysFont(BUTTON_TEXT_FONT_NAME, BUTTON_PAUSE_FONT_SIZE),
+            borders_size= BUTTON_PAUSE_BORDERS_SIZE,
+            main_color = COLOR_BUTTON_MAIN,
+            second_color = COLOR_BUTTON_SECOND,
+            text_color= COLOR_BUTTON_TEXT,
+            border_color= COLOR_BUTTON_BORDER, 
+            func= self.pause,
+            groups= [self.buttons]
+        )
+        
+        
+    def pause(self):
+        """
+            Button pause call back function
+            it stopes or runs the program
+        """
+        
+        self.run_hack_computer = not self.run_hack_computer
+
+    # ---------------------------- Emulator Run Functions ----------------------------
+    def update(self):
+        """ 
+            Update the state of an emulator
+        """
+        # Update Panels data
+        self.panel_registers.update_data(self.registers_panel_data())
+        self.panel_ram.update_data(self.ram_panel_data())
+        
+        rom_data, rom_colors = self.rom_panel_data()
+        self.panel_rom.update_data(data = rom_data, colors=rom_colors)
+        
+        state_data, state_colors = self.state_panel_data()
+        self.panel_state.update_data(data = state_data, colors = state_colors)
+        
+        # Update buttons
+        self.buttons.update(pygame.mouse.get_pos())
+        
+        # Update screen
+        self.screen.update()
+        
+        # Update draws panel
+        self.panels.update()   
+
 
     def events_handler(self):
         """
@@ -340,19 +378,12 @@ class GuiEmulator:
                 sys.exit()
                 return
             
-            if event.type == pygame.KEYUP:
-                # Pause the program 
-                if event.key == KEYBIND_PAUSE:
-                    self.run_hack_computer = not self.run_hack_computer              
-
-                # Change speed to higher
-                if event.key == KEYBIND_INCREASE_SPEED:
-                    self.gui_speed = min(MAX_GUI_SPEED, self.gui_speed + GUI_SPEED_CHANGE)
-                
-                # Change speed to lower.
-                if event.key == KEYBIND_DECREASE_SPEED:
-                    self.gui_speed = max(MIN_GUI_SPEED, self.gui_speed - GUI_SPEED_CHANGE)
-                                
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                for sprite in self.buttons.sprites():
+                    if sprite.rect.collidepoint(mouse_pos):
+                        sprite.call_function()
+            
 
     def run(self):
         # Work on events
@@ -367,6 +398,7 @@ class GuiEmulator:
         # Draw objects
         self.panels.draw(self.window)
         self.window.blit(self.screen.image, self.screen.rect)
+        self.buttons.draw(self.window)
         
         
 
