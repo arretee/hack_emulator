@@ -1,5 +1,5 @@
-from src.hack_config import *
-from src.binary_functions import * 
+from src.hack.hack_config import *
+from src.hack.binary_functions import * 
 
 
 class HackCPU:

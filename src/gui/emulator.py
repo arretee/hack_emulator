@@ -1,14 +1,14 @@
 import pygame
 import sys
 
-from src.gui_panel import Panel
-from src.gui_screen import GuiScreen
-from src.gui_config import *
+from src.gui.panel import Panel
+from src.gui.gui_screen import GuiScreen
+from src.gui.config import *
 
 
-from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
-from src.hack_computer import HackComputer
-import src.hack_config
+from src.hack.binary_functions import convert_bin_to_dec, convert_dec_to_bin
+from src.hack.hack_computer import HackComputer
+import src.hack.hack_config
 
 
 class GuiEmulator:
@@ -255,9 +255,9 @@ class GuiEmulator:
             :return: list by size of 3 -> [data matrix, colors matrix, select_row]
         """
         # Get center_pc(int) of table and selected row 
-        if self.hack_computer.pc  + PANEL_ROM_TABLE_SIZE[0] / 2 > src.hack_config.ROM_SIZE - 1:
-            center_pc = src.hack_config.ROM_SIZE - PANEL_ROM_TABLE_SIZE[0] / 2
-            selected_row = PANEL_ROM_TABLE_SIZE[0] - (src.hack_config.ROM_SIZE - self.hack_computer.pc)
+        if self.hack_computer.pc  + PANEL_ROM_TABLE_SIZE[0] / 2 > src.hack.hack_config.ROM_SIZE - 1:
+            center_pc = src.hack.hack_config.ROM_SIZE - PANEL_ROM_TABLE_SIZE[0] / 2
+            selected_row = PANEL_ROM_TABLE_SIZE[0] - (src.hack.hack_config.ROM_SIZE - self.hack_computer.pc)
             
         
         elif self.hack_computer.pc - PANEL_ROM_TABLE_SIZE[0] / 2 < 0:
@@ -294,7 +294,7 @@ class GuiEmulator:
                     data[row][col] = "".join([str(x) for x in instruction])
                     
                 if col == 2:
-                    data[row][col] = src.hack_config.disassemble_instruction(instruction)
+                    data[row][col] = src.hack.hack_config.disassemble_instruction(instruction)
                 
                 # Change color of selected row
                 if row == selected_row:

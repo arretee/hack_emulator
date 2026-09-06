@@ -89,7 +89,7 @@ JUMP_JMP  = [1, 1, 1]
 
 
 # -------------------------------------------- Disassemle Functions --------------------------------------------
-from src.binary_functions import convert_bin_to_dec
+from src.hack.binary_functions import convert_bin_to_dec
 
 def get_comp_by_sublist(sublist: list) -> str:
     """ Function converts sublit of a c c c c c c from hack instruction to string comp

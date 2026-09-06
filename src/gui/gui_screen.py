@@ -1,9 +1,9 @@
 import pygame
 
-from src.gui_config import * 
+from src.gui.config import * 
 
-from src.hack_config import REGISTER_SIZE, SCREEN_REGISTERS_NUM
-from src.hack_computer import HackComputer
+from src.hack.hack_config import REGISTER_SIZE, SCREEN_REGISTERS_NUM
+from src.hack.hack_computer import HackComputer
 
 class GuiScreen(pygame.sprite.Sprite):
     """

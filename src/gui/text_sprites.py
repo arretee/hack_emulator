@@ -1,4 +1,7 @@
-from src.gui_config import * 
+import pygame
+
+from src.gui.config import * 
+
 
 class TextSprite(pygame.sprite.Sprite):
     """

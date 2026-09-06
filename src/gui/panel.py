@@ -1,8 +1,8 @@
 import pygame
 from copy import deepcopy
 
-from src.gui_config import *
-from src.gui_classes import TextSprite
+from src.gui.config import *
+from src.gui.text_sprites import TextSprite
 
 class Panel(pygame.sprite.Sprite):
     def __init__(self, 

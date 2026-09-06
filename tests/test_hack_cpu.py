@@ -1,6 +1,6 @@
 import pytest
-from src.hack_cpu import HackCPU
-from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
+from src.hack.hack_cpu import HackCPU
+from src.hack.binary_functions import convert_bin_to_dec, convert_dec_to_bin
 
 # Helper functions to construct binary instruction arrays
 def get_comp_bits(mnemonic: str) -> tuple[int, list[int]]:

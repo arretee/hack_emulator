@@ -1,13 +1,13 @@
 import time
 
 # Hack computer imports
-from src.hack_computer import HackComputer
-from src.hack_config import *
-from src.binary_functions import convert_bin_to_dec, convert_dec_to_bin
+from src.hack.hack_computer import HackComputer
+from src.hack.hack_config import SCREEN_REGISTERS_NUM, SCREEN
+from src.hack.binary_functions import convert_bin_to_dec, convert_dec_to_bin
 
 # Gui imports 
-from src.gui_emulator import GuiEmulator
-from src.gui_config import MAX_GUI_SPEED
+from src.gui.emulator import GuiEmulator
+from src.gui.config import MAX_GUI_SPEED
 
 
 class HackEmulator:

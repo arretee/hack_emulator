@@ -1,6 +1,6 @@
 import pygame
 
-from src.hack_config import R0, R15, SCREEN, KBD
+from src.hack.hack_config import R0, R15, SCREEN, KBD
 
 # Constatns Values
         
