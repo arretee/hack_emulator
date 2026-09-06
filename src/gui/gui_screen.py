@@ -44,8 +44,11 @@ class GuiScreen(pygame.sprite.Sprite):
                 ram_register = bit_num // REGISTER_SIZE
                 register_pixel = bit_num % REGISTER_SIZE
                 
+                row_draw = bit_num // EMULATOR_SCREEN_WIDTH
+                col_draw = bit_num % EMULATOR_SCREEN_WIDTH
+                
                 if self.hack_computer.RAM[SCREEN + ram_register][register_pixel]:
-                    self.image.set_at((row, col), COLOR_SCREEN_BLACK)
+                    self.image.set_at((col_draw, row_draw), COLOR_SCREEN_BLACK)
     
     
     

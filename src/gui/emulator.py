@@ -21,8 +21,6 @@ class GuiEmulator:
         Args:
             hack_computer (HackComputer): HackComputer unit
         """
-        # Pygame init
-        pygame.init()
 
         self.hack_computer = hack_computer
 
@@ -48,7 +46,9 @@ class GuiEmulator:
         self.gui_speed = DEFALUT_GUI_SPEED
         self.exit_status = False
         
-        self.current_file = "Mult.hack"
+        self.current_file = self.hack_computer.path
+        if '/' in self.current_file:
+            self.current_file = self.current_file.split('/')[-1]
         
         self.run_hack_computer = False
         
@@ -331,15 +331,80 @@ class GuiEmulator:
             groups= [self.buttons]
         )
         
+        self.button_decrease_speed = Button(
+            pos = BUTTON_DECREASE_POS,
+            size = BUTTON_DECREASE_SIZE,
+            text = BUTTON_DECREASE_TEXT,
+            font = pygame.font.SysFont(BUTTON_TEXT_FONT_NAME, BUTTON_DECREASE_FONT_SIZE),
+            borders_size= BUTTON_DECREASE_BORDERS_SIZE,
+            main_color = COLOR_BUTTON_MAIN,
+            second_color = COLOR_BUTTON_SECOND,
+            text_color= COLOR_BUTTON_TEXT,
+            border_color= COLOR_BUTTON_BORDER, 
+            func= self.decrease_speed,
+            groups= [self.buttons]
+        )
+        
+        self.button_increase_speed = Button(
+            pos = BUTTON_INCREASE_POS,
+            size = BUTTON_INCREASE_SIZE,
+            text = BUTTON_INCREASE_TEXT,
+            font = pygame.font.SysFont(BUTTON_TEXT_FONT_NAME, BUTTON_INCREASE_FONT_SIZE),
+            borders_size= BUTTON_INCREASE_BORDERS_SIZE,
+            main_color = COLOR_BUTTON_MAIN,
+            second_color = COLOR_BUTTON_SECOND,
+            text_color= COLOR_BUTTON_TEXT,
+            border_color= COLOR_BUTTON_BORDER, 
+            func= self.increase_speed,
+            groups= [self.buttons]
+        )
+        
+        self.button_reset = Button(
+            pos = BUTTON_RESET_POS,
+            size = BUTTON_RESET_SIZE,
+            text = BUTTON_RESET_TEXT,
+            font = pygame.font.SysFont(BUTTON_TEXT_FONT_NAME, BUTTON_RESET_FONT_SIZE),
+            borders_size= BUTTON_RESET_BORDERS_SIZE,
+            main_color = COLOR_BUTTON_MAIN,
+            second_color = COLOR_BUTTON_SECOND,
+            text_color= COLOR_BUTTON_TEXT,
+            border_color= COLOR_BUTTON_BORDER, 
+            func= self.reset,
+            groups= [self.buttons]
+        )
+    
         
     def pause(self):
         """
             Button pause call back function
             it stopes or runs the program
         """
-        
         self.run_hack_computer = not self.run_hack_computer
 
+
+    def increase_speed(self):
+        """
+            Method for to increase gui speed
+        """
+        if self.gui_speed + GUI_SPEED_CHANGE <= MAX_GUI_SPEED:
+            self.gui_speed += GUI_SPEED_CHANGE
+            
+    
+    def decrease_speed(self):
+        """
+            Method for to decrease gui speed
+        """
+        if self.gui_speed - GUI_SPEED_CHANGE >= MIN_GUI_SPEED:
+            self.gui_speed -= GUI_SPEED_CHANGE
+
+
+    def reset(self):
+        """
+            Reseting hack pc with same program
+        """
+        self.hack_computer.manul_reset()
+        
+        
     # ---------------------------- Emulator Run Functions ----------------------------
     def update(self):
         """ 
@@ -371,7 +436,7 @@ class GuiEmulator:
             Must be called every frame for correct work
         """
         events = pygame.event.get()
-
+        
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -384,7 +449,17 @@ class GuiEmulator:
                     if sprite.rect.collidepoint(mouse_pos):
                         sprite.call_function()
             
-
+            if self.run_hack_computer:
+                if event.type == pygame.KEYDOWN:
+                    if event.key <= 152:
+                        self.hack_computer.update_kbd(event.key)
+                        
+                
+            if event.type == pygame.KEYUP:
+                    self.hack_computer.update_kbd(0)
+                
+            
+            
     def run(self):
         # Work on events
         self.events_handler()
@@ -399,7 +474,6 @@ class GuiEmulator:
         self.panels.draw(self.window)
         self.window.blit(self.screen.image, self.screen.rect)
         self.buttons.draw(self.window)
-        
         
 
         # timeout for fps

@@ -3,6 +3,16 @@ import pygame
 from src.hack.hack_config import R0, R15, SCREEN, KBD
 
 # Constatns Values
+SPECIAL_KEYS = {
+    pygame.K_RETURN: 128, pygame.K_BACKSPACE: 129,
+    pygame.K_LEFT: 130, pygame.K_UP: 131, pygame.K_RIGHT: 132, pygame.K_DOWN: 133,
+    pygame.K_HOME: 134, pygame.K_END: 135, pygame.K_PAGEUP: 136,
+    pygame.K_PAGEDOWN: 137, pygame.K_INSERT: 138, pygame.K_DELETE: 139,
+    pygame.K_ESCAPE: 140, pygame.K_F1: 141, pygame.K_F2: 142, pygame.K_F3: 143,
+    pygame.K_F4: 144, pygame.K_F5: 145, pygame.K_F6: 146, pygame.K_F7: 147,
+    pygame.K_F8: 148, pygame.K_F9: 149, pygame.K_F10: 150, pygame.K_F11: 151,
+    pygame.K_F12: 152,
+}
         
 # -------------------------------------------- Window --------------------------------------------
 WINDOW_SIZE = (1280, 720)
@@ -10,9 +20,6 @@ WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_SIZE
 WINDOW_TITLE = "Hack Computer Emulator"
 
 WINDOW_FPS = 120
-
-
-# --------------------------------------------- Fonts ---------------------------------------------
 
 
 # --------------------------------------------- GUI ---------------------------------------------
@@ -209,8 +216,26 @@ BUTTON_TEXT_FONT_NAME = "Arial"
 
 
 BUTTON_PAUSE_POS = (PANEL_ROM_POS[0] + PANEL_ROM_SIZE[0] + PANEL_GAP, PANEL_ROM_POS[1])
-BUTTON_PAUSE_SIZE = (WINDOW_WIDTH - BUTTON_PAUSE_POS[0] - PANEL_GAP, 50)
+BUTTON_PAUSE_SIZE = ((WINDOW_WIDTH - BUTTON_PAUSE_POS[0] - PANEL_GAP * 2) / 2, 50)
 BUTTON_PAUSE_TEXT = "Run / Pause"
 BUTTON_PAUSE_FONT_SIZE = 30
 BUTTON_PAUSE_BORDERS_SIZE = 10
 
+
+BUTTON_DECREASE_POS = (BUTTON_PAUSE_POS[0], BUTTON_PAUSE_POS[1] + BUTTON_PAUSE_SIZE[1] + PANEL_GAP)
+BUTTON_DECREASE_SIZE = (BUTTON_PAUSE_SIZE[0], BUTTON_PAUSE_SIZE[1])
+BUTTON_DECREASE_TEXT = "Speed -"
+BUTTON_DECREASE_FONT_SIZE = 30
+BUTTON_DECREASE_BORDERS_SIZE = 10
+
+BUTTON_INCREASE_POS = (BUTTON_DECREASE_POS[0] + BUTTON_DECREASE_SIZE[0] + PANEL_GAP, BUTTON_DECREASE_POS[1])
+BUTTON_INCREASE_SIZE = (BUTTON_DECREASE_SIZE[0], BUTTON_DECREASE_SIZE[1])
+BUTTON_INCREASE_TEXT = "Speed +"
+BUTTON_INCREASE_FONT_SIZE = 30
+BUTTON_INCREASE_BORDERS_SIZE = 10
+
+BUTTON_RESET_POS = (BUTTON_PAUSE_POS[0], BUTTON_DECREASE_POS[1] + BUTTON_DECREASE_SIZE[1] + PANEL_GAP)
+BUTTON_RESET_SIZE = (BUTTON_PAUSE_SIZE[0], BUTTON_PAUSE_SIZE[1])
+BUTTON_RESET_TEXT = "Reset"
+BUTTON_RESET_FONT_SIZE = 30
+BUTTON_RESET_BORDERS_SIZE = 10
