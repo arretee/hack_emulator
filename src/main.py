@@ -1,11 +1,10 @@
-import time
 import argparse
 import pygame
+import threading
 
 # Hack computer imports
 from src.hack.hack_computer import HackComputer
 from src.hack.hack_config import MAX_POSITIVE_VALUE
-from src.hack.binary_functions import convert_bin_to_dec, convert_dec_to_bin
 
 # Gui imports 
 from src.gui.emulator import GuiEmulator
@@ -14,7 +13,7 @@ from src.gui.config import MAX_GUI_SPEED
 
 class HackEmulator:
     def __init__(self):
-         # ----- Get Flags -----
+        # ----- Get Flags -----
         parser = argparse.ArgumentParser()
         parser.add_argument("-p", "--path", help = "Path to .hack file to load into a hack pc", default = None, type = str)
         registers = [0 for i in range(16)]
@@ -48,38 +47,61 @@ class HackEmulator:
         self.hack_pc = HackComputer(args.path, registers)
         self.gui = GuiEmulator(self.hack_pc)
         
+        # Create threads
+        self.gui_thread = threading.Thread(target = self.run_gui)
+        self.hack_thread = threading.Thread(target = self.run_hack)
+        
+        self.running = True
+        
     
     def timer(self):
         """Method for time control itterations
 
         :return: True if timer is passed, false otherwise
         """
-        # If timer is passed -> update time for next iteration and return True
-        if (self.gui.gui_speed - MAX_GUI_SPEED == 0) or ( pygame.time.get_ticks() // (MAX_GUI_SPEED - self.gui.gui_speed) != self.time):
+        
+        try:
+            # If timer is passed -> update time for next iteration and return True
+            if (self.gui.gui_speed - MAX_GUI_SPEED == 0) or ( pygame.time.get_ticks() // (MAX_GUI_SPEED - self.gui.gui_speed) != self.time):
+                if self.gui.gui_speed - MAX_GUI_SPEED == 0:
+                    self.time = pygame.time.get_ticks()
+                else:
+                    self.time = pygame.time.get_ticks() // (MAX_GUI_SPEED - self.gui.gui_speed)
+                    
+                return True
+                
+            # If not -> update time for next iteration 
             if self.gui.gui_speed - MAX_GUI_SPEED == 0:
                 self.time = pygame.time.get_ticks()
             else:
                 self.time = pygame.time.get_ticks() // (MAX_GUI_SPEED - self.gui.gui_speed)
                 
-            return True
-            
-        # If not -> update time for next iteration 
-        if self.gui.gui_speed - MAX_GUI_SPEED == 0:
+        except ZeroDivisionError:
             self.time = pygame.time.get_ticks()
-        else:
-            self.time = pygame.time.get_ticks() // (MAX_GUI_SPEED - self.gui.gui_speed)
+            return False
                 
         return False
         
-        
-    def run(self):
-        self.time = 0
-        while True:
+    
+    def run_gui(self):
+        while self.running:
             self.gui.run()
             
+            self.running = self.gui.running
+    
+    
+    def run_hack(self):
+        self.time = 0
+        while self.running:
             if self.timer() and self.gui.run_hack_computer:
                 self.hack_pc.execute_command()
-                    
+    
+    
+    def run(self):
+        self.hack_thread = threading.Thread(target = self.run_hack)
+        self.hack_thread.start()
+        
+        self.run_gui()
                 
             
             

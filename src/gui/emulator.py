@@ -51,6 +51,7 @@ class GuiEmulator:
             self.current_file = self.current_file.split('/')[-1]
         
         self.run_hack_computer = False
+        self.running = True
         
         
     # ---------------------------- Panels ----------------------------
@@ -439,10 +440,9 @@ class GuiEmulator:
         
         for event in events:
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-                return
-            
+                self.running = False
+                
+                
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 for sprite in self.buttons.sprites():
